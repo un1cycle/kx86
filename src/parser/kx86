@@ -63,7 +63,7 @@ letterdict = {
     "esc": "0x01"
 }
 
-
+# THIS CODE IS FUCKING TERRIBLE NO ONE SHOULD EVER USE IT
 # mov esi, [lfb_addr]
 # mov edx, [lfb_pitch]
 
