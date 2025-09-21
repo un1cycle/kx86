@@ -3,4 +3,4 @@ an imperative, modular programming language to make x86 kernel development easy
 # how it works
 kx86 programs compile to a kernel which is then combined with a bootloader to make an os image
 # stack
-the functionality is written in x86 assembly and the parser is written in python3 bc i needed to make this as fast as possible
+the functionality is written in x86 assembly and the parser is written in py3 
