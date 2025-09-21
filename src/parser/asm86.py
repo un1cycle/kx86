@@ -123,7 +123,7 @@ pm_start:
 
 ; KX86 STARTS HERE
 
-
+section .data
 
 
 

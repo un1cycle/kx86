@@ -1,14 +1,13 @@
-pack: hellohi,
-num: idxVar, $1&
-str: strVar, "hello<endl>"&
-;
+array: idxVar, {1, 7} ;
+edit: [idxVar@1], 9;
 
-random: 0, 70, [idxVar];
 rect: 50, 50, 55, 55, #FF0000;
-while: [idxVar] == 1, then=hellohi ~ 1;
 hang;
 
 /:
 - write triangle function
 - write switch function (use asmpack)
+- add batchpacking to docs
+- update docs with access and arrayedit
+- update vs code with that too
 :/

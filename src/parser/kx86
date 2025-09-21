@@ -117,13 +117,13 @@ pusha
 mov al, 0x36
 out 0x43, al
 mov bx, 1193
-.delay_loop_inline{rdm}:
+delay_loop_inline{rdm}:
     mov ax, bx
-.wait_inline{rdm}:
+wait_inline{rdm}:
     out 0x40, al
     dec ax
-    jnz .wait_inline{rdm}
-    loop .delay_loop_inline{rdm}
+    jnz wait_inline{rdm}
+    loop delay_loop_inline{rdm}
 popa
     """
 
@@ -249,7 +249,6 @@ def kx86_compile(body, splitter = ";"):
                 cmd[1] = arguments(cmd[1].strip(), ",", 1)
                 data["[" + cmd[1][0].strip() + "]"] = "num"
                 init_vars += "\n" + cmd[1][0].strip() + f":\ndd {cmd[1][1].strip()}\n"
-            
             case "str":
                 cmd[1] = arguments(cmd[1].strip(), ",", 1)
                 data["[" + cmd[1][0].strip() + "]"] = "str"
@@ -262,7 +261,7 @@ def kx86_compile(body, splitter = ";"):
             case "edit": # edit 'edit' for strings iykykykkykyk
                 cmd[1] = arguments(cmd[1].strip(), ",", 1)
                 final += f"\nmov dword {cmd[1][0].strip()}, {cmd[1][1].strip()}\n"
-                    
+
             case "if":
                 bool_num = random.randint(1,10000)
                 while bool_num in bools:
@@ -370,21 +369,21 @@ dd {bool[1].strip()}
                 else:
                     bool = cmd[1][0].strip() # this is the key that you're checking is pressed
                     final += f"""
-CheckKeyboard{bool_num}:
+check_keyboard{bool_num}:
     in al, 0x64
     test al, 1
-    jz Done{bool_num}
+    jz done{bool_num}
     in al, 0x60
     cmp al, 0x80
-    jb Pressed{bool_num}
+    jb pressed{bool_num}
     sub al, 0x80
     mov byte [KEYS+eax], 0
-    jmp Done{bool_num}
+    jmp done{bool_num}
 
-Pressed{bool_num}:
+pressed{bool_num}:
     mov byte [KEYS+eax], 1
 
-Done{bool_num}:
+done{bool_num}:
     cmp byte [KEYS+{letterdict[bool.lower()[-1]]}], 1
     jne false{bool_num}
     sub byte [KEYS+{letterdict[bool.lower()[-1]]}], 1
@@ -531,21 +530,21 @@ dd {bool[1].strip()}
                 else:
                     bool = cmd[1][0].strip() # this is the key that you're checking is pressed
                     final += f"""
-CheckKeyboard{bool_num}:
+check_keyboard{bool_num}:
     in al, 0x64
     test al, 1
-    jz Done{bool_num}
+    jz done{bool_num}
     in al, 0x60
     cmp al, 0x80
-    jb Pressed{bool_num}
+    jb pressed{bool_num}
     sub al, 0x80
     mov byte [KEYS+eax], 0
-    jmp Done{bool_num}
+    jmp done{bool_num}
 
-Pressed{bool_num}:
+pressed{bool_num}:
     mov byte [KEYS+eax], 1
 
-Done{bool_num}:
+done{bool_num}:
     cmp byte [KEYS+{letterdict[bool.lower()[-1]]}], 1
     jne false{bool_num}
     sub byte [KEYS+{letterdict[bool.lower()[-1]]}], 1
@@ -669,12 +668,25 @@ fistp dword {cmd[1][1].strip()}
             case "array":
                 cmd[1] = arguments(cmd[1].strip(), ",", 1)
                 data["[" + cmd[1][0].strip() + "]"] = "array"
-                final += "\n" + cmd[1][0].strip() + f":\ndd {cmd[1][1].strip()}\n"
+                init_vars += "\n" + cmd[1][0].strip() + f":\ndd {cmd[1][1].strip()}\n"
             case "random":
                 cmd[1] = arguments(cmd[1].strip(), ",", 2)
                 final += asmrandom(cmd[1][0].strip(), cmd[1][1].strip(), cmd[1][2].strip())
             case "hang":
                 final += "\nhlt\n"
+            case "access":
+                cmd[1] = arguments(cmd[1].strip(), ",", 2)
+                final += f"""
+mov eax, {cmd[1][1].strip()}
+mov dword {cmd[1][2].strip()}, [{cmd[1][0].strip()[1:-1]} + eax*4]
+                """
+            case "arrayedit":
+                cmd[1] = arguments(cmd[1].strip(), ",", 2)
+                final += f"""
+mov eax, {cmd[1][1].strip()}
+mov dword [{cmd[1][0].strip()[1:-1]} + eax*4], {cmd[1][2].strip()}
+                """
+
 
     return final
 
@@ -689,8 +701,8 @@ if __name__ == "__main__":
     for i in range(len(args.file)):
         with open(args.file[i], "r") as f:
             body += "\n" + f.read()
-    finale = kx86_compile(body.replace("hang;", "hang:;").replace("hang&", "hang:&").replace("hang &", "hang: &")).replace("@", " + ").replace("{", "").replace("}", "")
-    asm86.kernel += init_vars + finale
+    finale = kx86_compile(body.replace("hang;", "hang:;").replace("hang&", "hang:&").replace("hang &", "hang: &")).replace("@", " + 4*").replace("{", "").replace("}", "")
+    asm86.kernel += init_vars.replace("@", " + 4*").replace("{", "").replace("}", "") + "\nsection .text\n" + finale
     if args.compile_mode.strip().lower() != "jit":
         if args.compile_mode:
             asm86.create_image(args.output, args.compile_mode.strip().lower())

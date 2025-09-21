@@ -52,7 +52,7 @@ pm_start:
 
 ; KX86 STARTS HERE
 
-
+section .data
 
 
 
@@ -60,25 +60,12 @@ pm_start:
 
 
 idxVar:
-dd 1
+dd 1, 7
 
-strVar:
-db "hello", 0x0D, 0x0A, "", 0
+section .text
 
-rdtsc
-xor eax, edx
+mov dword [idxVar + 4*1], 9
 
-
-mov eax, eax 
-mov ecx, 0
-sub ecx, 70
-
-xor edx, edx
-div ecx 
-mov eax, edx 
-add eax, 70
-mov dword [idxVar], eax
-    
 
     mov esi, [lfb_addr]  
     mov edx, [lfb_pitch]  
@@ -92,7 +79,7 @@ mov dword [idxVar], eax
     sub eax, 50          
     mov ebx, eax
 
-row_loop6221:
+row_loop8237:
     push ebx                  
     mov edi, esi
     mov eax, 50
@@ -103,35 +90,18 @@ row_loop6221:
     sub eax, 50        
     mov ecx, eax
 
-pixel_loop6221:
+pixel_loop8237:
     mov byte [edi], 0x00 
     mov byte [edi+1], 0x00 
     mov byte [edi+2], 0xFF 
     add edi, 3
-    loop pixel_loop6221
+    loop pixel_loop8237
 
     pop ebx
     add esi, edx        
     dec ebx
-    jnz row_loop6221
+    jnz row_loop8237
 
-
-
-while1922:
-
-mov eax, [idxVar]
-cmp eax, 1
-je true1922
-jne false1922
-
-true1922:
-
-
-
-
-jmp while1922
-
-false1922:
 
 
 hlt
