@@ -3,6 +3,8 @@ import asm86
 import argparse
 import random
 
+# preface: this code is terrible but it was made in just 3 days so dont judge me >:(
+
 data = {}
 packs = {}
 labels = []
@@ -63,7 +65,6 @@ letterdict = {
     "esc": "0x01"
 }
 
-# THIS CODE IS FUCKING TERRIBLE NO ONE SHOULD EVER USE IT
 # mov esi, [lfb_addr]
 # mov edx, [lfb_pitch]
 
