@@ -79,7 +79,7 @@ mov dword [idxVar + 4*1], 9
     sub eax, 50          
     mov ebx, eax
 
-row_loop8237:
+row_loop991:
     push ebx                  
     mov edi, esi
     mov eax, 50
@@ -90,17 +90,17 @@ row_loop8237:
     sub eax, 50        
     mov ecx, eax
 
-pixel_loop8237:
+pixel_loop991:
     mov byte [edi], 0x00 
     mov byte [edi+1], 0x00 
     mov byte [edi+2], 0xFF 
     add edi, 3
-    loop pixel_loop8237
+    loop pixel_loop991
 
     pop ebx
     add esi, edx        
     dec ebx
-    jnz row_loop8237
+    jnz row_loop991
 
 
 

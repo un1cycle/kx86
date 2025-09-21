@@ -694,7 +694,7 @@ if __name__ == "__main__":
     parser = argparse.ArgumentParser()
     parser.add_argument("-f", "--file", type=str, nargs="+", help="file or files to compile")
     parser.add_argument("-o", "--output", type=str, help="file to output to")
-    parser.add_argument("-c", "--compile-mode", type=str, help="default is bin, can switch to asm or JIT") 
+    parser.add_argument("-c", "--compile-mode", type=str, help="default is bin, can switch to asm or alq (auto-launch qemu)") 
 
     args = parser.parse_args()
     body = ""
@@ -703,10 +703,10 @@ if __name__ == "__main__":
             body += "\n" + f.read()
     finale = kx86_compile(body.replace("hang;", "hang:;").replace("hang&", "hang:&").replace("hang &", "hang: &")).replace("@", " + 4*").replace("{", "").replace("}", "")
     asm86.kernel += init_vars.replace("@", " + 4*").replace("{", "").replace("}", "") + "\nsection .text\n" + finale
-    if args.compile_mode.strip().lower() != "jit":
+    if args.compile_mode.strip().lower() != "alq":
         if args.compile_mode:
             asm86.create_image(args.output, args.compile_mode.strip().lower())
         else:
             asm86.create_image(args.output)
     else:
-        asm86.create_image(show=args.compile_mode)
+        asm86.create_image(show="jit")
