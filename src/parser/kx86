@@ -135,13 +135,10 @@ def draw_pixel(x1, y1, x2, y2, color, rdm):
     mov edx, [lfb_pitch]  
 
     mov eax, {y1}
-    imul eax, edx         
+    mov ebx, {y2}
+    sub ebx, eax
+    imul eax, edx
     add esi, eax
-    mov edi, esi
-
-    mov eax, {y2}
-    sub eax, {y1}          
-    mov ebx, eax
 
 row_loop{rdm}:
     push ebx                  
