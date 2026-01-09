@@ -141,29 +141,24 @@ def draw_pixel(x1, y1, x2, y2, color, rdm):
     add esi, eax
 
 row_loop{rdm}:
-    push ebx                  
     mov edi, esi
     mov eax, {x1}
+    mov ecx, {x2}
+    sub ecx, eax 
     imul eax, 3              
     add edi, eax         
-
-    mov eax, {x2}
-    sub eax, {x1}        
-    mov ecx, eax
 
 pixel_loop{rdm}:
     mov byte [edi], 0x{color.strip()[5:7]} 
     mov byte [edi+1], 0x{color.strip()[3:5]} 
     mov byte [edi+2], 0x{color.strip()[1:3]} 
     add edi, 3
-    loop pixel_loop{rdm}
+    dec ecx
+    jnz pixel_loop{rdm}
 
-    pop ebx
     add esi, edx        
     dec ebx
     jnz row_loop{rdm}
-
-
 """
 
 def arguments(cmd, splitter, amount):

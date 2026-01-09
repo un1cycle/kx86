@@ -5,6 +5,10 @@ rect: 50, 50, 55, 55, #FF0000;
 hang;
 
 /:
+- optimize like this:
+- - everything should be stored in a register when possible
+- - else, store in stack
+
 - write triangle function
 - write switch function (use asmpack)
 - add batchpacking to docs

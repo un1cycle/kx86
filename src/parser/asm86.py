@@ -106,6 +106,7 @@ start:
     jmp CODE_SEL:pm_start
 
 bits 32
+
 pm_start:
     mov ax, DATA_SEL
     mov ds, ax
@@ -121,31 +122,8 @@ pm_start:
 
 
 
-; KX86 STARTS HERE
 
 section .data
-
-
-
-
-
-"""
-
-def create_image(name="._kx86.img", show="bin"):
-    global kernel
-    kernel += """
-
-
-
-
-
-; KX86 ENDS HERE
-
-
-
-
-
-
 
 align 4
 lfb_addr: dd 0
@@ -168,7 +146,35 @@ gdt_desc:
 gdt_end:
 
 CODE_SEL equ 0x08
-DATA_SEL equ 0x10"""
+DATA_SEL equ 0x10
+
+
+
+
+
+; KX86 STARTS HERE
+
+
+
+
+"""
+
+def create_image(name="._kx86.img", show="bin"):
+    global kernel
+    kernel += """
+
+
+
+
+
+; KX86 ENDS HERE
+
+
+
+
+
+
+"""
     id_num = random.randint(1000,10000)
     attempts = 0
     while os.path.exists(f".boot{id_num}.asm") or os.path.exists(f".boot{id_num}.bin") or os.path.exists(f".kernel{id_num}.asm") or os.path.exists(f".kernel{id_num}.bin"):

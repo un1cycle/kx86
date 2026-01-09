@@ -35,6 +35,7 @@ start:
     jmp CODE_SEL:pm_start
 
 bits 32
+
 pm_start:
     mov ax, DATA_SEL
     mov ds, ax
@@ -47,77 +48,21 @@ pm_start:
     mov esi, [lfb_addr]
 
 
+    mov eax, cr0
+    and eax, 0xFFFB 
+    or  eax, 0x2 
+    mov cr0, eax
+
+    mov eax, cr4
+    or  eax, 0x600
+    mov cr4, eax
 
 
 
-; KX86 STARTS HERE
+
+
 
 section .data
-
-
-
-
-
-
-idxVar:
-dd 1, 7
-
-section .text
-
-mov dword [idxVar + 4*1], 9
-
-
-    mov esi, [lfb_addr]  
-    mov edx, [lfb_pitch]  
-
-    mov eax, 50
-    imul eax, edx         
-    add esi, eax
-    mov edi, esi
-
-    mov eax, 55
-    sub eax, 50          
-    mov ebx, eax
-
-row_loop991:
-    push ebx                  
-    mov edi, esi
-    mov eax, 50
-    imul eax, 3              
-    add edi, eax         
-
-    mov eax, 55
-    sub eax, 50        
-    mov ecx, eax
-
-pixel_loop991:
-    mov byte [edi], 0x00 
-    mov byte [edi+1], 0x00 
-    mov byte [edi+2], 0xFF 
-    add edi, 3
-    loop pixel_loop991
-
-    pop ebx
-    add esi, edx        
-    dec ebx
-    jnz row_loop991
-
-
-
-hlt
-
-
-
-
-
-
-; KX86 ENDS HERE
-
-
-
-
-
-
 
 align 4
 lfb_addr: dd 0
@@ -141,3 +86,70 @@ gdt_end:
 
 CODE_SEL equ 0x08
 DATA_SEL equ 0x10
+
+
+
+
+
+; KX86 STARTS HERE
+
+
+
+
+
+idxVar:
+dd 1
+
+section .text
+
+    mov esi, [lfb_addr]  
+    mov edx, [lfb_pitch]  
+
+    mov eax, __float32__(50.1)
+    imul eax, edx         
+    add esi, eax
+    mov edi, esi
+
+    mov eax, 55
+    sub eax, 50          
+    mov ebx, eax
+
+row_loop9477:
+    push ebx                  
+    mov edi, esi
+    mov eax, 50
+    imul eax, 3              
+    add edi, eax         
+
+    mov eax, 55
+    sub eax, 50        
+    mov ecx, eax
+
+pixel_loop9477:
+    mov byte [edi], 0x00 
+    mov byte [edi+1], 0x00 
+    mov byte [edi+2], 0xFF 
+    add edi, 3
+    loop pixel_loop9477
+
+    pop ebx
+    add esi, edx        
+    dec ebx
+    jnz row_loop9477
+
+
+
+hlt
+
+
+
+
+
+
+; KX86 ENDS HERE
+
+
+
+
+
+
